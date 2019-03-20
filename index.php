@@ -12,6 +12,12 @@ error_reporting(E_ALL);
 add_action("admin_menu", "addMenu");
 add_shortcode('shtest', 'test');
 
+wp_enqueue_script('jquery');
+wp_register_script('script', plugin_dir_url(__FILE__) . '/js/script.js', array('jquery'));
+wp_enqueue_script( 'script' );
+
+
+
 function test(){
 	return "WITH SHORTCODE CREATED";
 }
@@ -40,6 +46,10 @@ TPL;
     }
 
 }
+
+/*
+*	Function to print table with all products
+*/
 
 function handlePost(){
 	global $wpdb;
@@ -93,6 +103,15 @@ GROUP BY p.ID
 				<input type="submit" class="button-primary" 
 				value="Edit" name="'.$draft->ID.'"
 				></button></td>';
+
+		/*echo '<tr>
+			<label for="priceAdmin">Price Admin</label>
+			<input type="text" id="priceAdmin">
+			<br>
+			<label for="priceNormalCust">Price Customer</label>
+			<input type="text" id="priceNormalCust">
+			<br>
+			</tr>';*/
 		echo '</tr>';
 	}	
 	echo '</tbody>';
@@ -124,6 +143,9 @@ function custom_price( $price, $product ) {
 		return $price;
 	}
 }
+
+
+
 
 ?> 
 
