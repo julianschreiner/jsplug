@@ -4,5 +4,7 @@ jQuery( document ).ready(function($) {
 
     $('.button-primary').click(function() {
     	console.log("clicked");
+    	console.log(this.name);
+    	
     });
 });
