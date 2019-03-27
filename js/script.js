@@ -16,27 +16,27 @@ jQuery( document ).ready(function($) {
         
         let priceInformations = $('input[type=hidden][name=priceInformation'+ this.name +']').val();
         console.log(priceInformations);
-
-        var obj = JSON.parse(priceInformations);
-        console.log(obj);
+        
         let template = '';
+        if(priceInformations.length > 0){
+            var obj = JSON.parse(priceInformations);
+            console.log(obj);
+            console.log(Object.keys(obj).length);
+            var length = Object.keys(obj).length;
 
-        console.log(Object.keys(obj).length);
-
-        var length = Object.keys(obj).length;
-
-        if(length > 1){
-            roles.forEach(function(element){
-                element = element.replace(/ /g,"_");
-
-                let tag = element + 'Price';
+            if(length > 1){
+                roles.forEach(function(element){
+                    element = element.replace(/ /g,"_");
+    
+                    let tag = element + 'Price';
+                    
+                    let price = obj[tag];
+                    
                 
-                let price = obj[tag];
-                
-            
-
-                template += '<label for="'+ element +'Price">' + element + ' Price:' + '</label><input type="text" name="'+ tag +'" value="'+ price +'"><br>';
-            });
+    
+                    template += '<label for="'+ element +'Price">' + element + ' Price:' + '</label><input type="text" name="'+ tag +'" value="'+ price +'"><br>';
+                });
+            }
         }
         else{
             roles.forEach(function(element){
@@ -44,9 +44,7 @@ jQuery( document ).ready(function($) {
                 template += '<label for="'+ element +'Price">' + element + ' Price:' + '</label><input type="text" name="'+ tag +'"><br>';
             });
         }
-
-        
-
+       
 
         $('.appendix').remove();
         $('#post-' + this.name).after

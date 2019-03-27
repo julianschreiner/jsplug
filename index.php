@@ -97,7 +97,7 @@ GROUP BY p.ID
 		echo '<tbody id="the-list">';
 
 
-	$defaultPrice = 0;
+	$defaultPrice = [];
 
 	foreach ($mydrafts as $draft){
 		$sku = $wpdb->get_results(
@@ -120,8 +120,8 @@ GROUP BY p.ID
 
 		$description = substr($draft->Description, 0, 100);
 		$description .= '...';
-		$defaultPrice = $draft->Price;
-
+		$defaultPrice[$sku->meta_value] = $draft->Price;
+		
 
 
 		echo '<tr id="post-'.$sku->meta_value.'" class="iedit author-self level-0 post-136 type-product status-publish has-post-thumbnail hentry product_cat-allgemein">';
@@ -163,11 +163,14 @@ GROUP BY p.ID
 
 
 		foreach($_POST as $key => $value){
-			if(empty($value)){
+			if(empty($value) || $value == 0 || is_null($value)){
 				// ASSIGN DEFAULT PRICE INTO IT
-				$jsonArr[$key] = $defaultPrice;
+				var_dump($defaultPrice[$_POST['productID']]);
+				$jsonArr[$key] = $defaultPrice[$_POST['productID']];
+				// BUG: IT GETS DEFAULT PRICE FROM SECOND ROW
 			}
 			else{
+			
 				$jsonArr[$key] = $value;
 			}
 
@@ -210,7 +213,7 @@ GROUP BY p.ID
 			), array('post_title' => $where));
 		}
 
-		
+		// TODO AUTO REFRESH VALUES
 	}
 }
 
@@ -227,11 +230,11 @@ function specific_product_ids(){
 		$retArray = [];
 
 		foreach($sku as $nr){
-			$retArray[] = (int) $nr->meta_value;
+			$retArray[] = $nr->meta_value;
 		}
 
 
-		return $numerical;
+		return $retArray;
 }
 
 
@@ -247,11 +250,19 @@ function get_price_multiplier() {
     return 2; // x2 for testing
 }
 
-function custom_price( $price, $product ) {
-	if( in_array($product->get_id(), specific_product_ids() ) ) {
+function custom_price( $price, $product ) {	
+	if( in_array($product->get_sku(), specific_product_ids() ) ) {
+
 		// TODO CHECK USER GROUP AND GIVE SETTED PRICE FOR THIS PRODUCT!!
+		$current_user_roles = wp_get_current_user()->roles[0];
+		// User can have more than one role
+		$current_user_roles = ucwords($current_user_roles);
+		var_dump($current_user_roles);
+
+
     	return $price * get_price_multiplier();
 	} else{
+		
 		return $price;
 	}
 }
