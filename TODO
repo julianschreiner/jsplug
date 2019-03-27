@@ -1,0 +1,5 @@
+
+Todo:
+  ✔ Get user groups and implement dynamically inside JS form @done(19-03-22 15:38)
+  ☐ Store $_POST inside db
+  ☐ Use rate information from db to fill in to woocommerce_hooks

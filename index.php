@@ -17,6 +17,10 @@ wp_register_script('script', plugin_dir_url(__FILE__) . '/js/script.js', array('
 wp_enqueue_script( 'script' );
 
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
 
 function test(){
 	return "WITH SHORTCODE CREATED";
@@ -93,6 +97,7 @@ GROUP BY p.ID
 		echo '<tbody id="the-list">';
 
 
+	$defaultPrice = 0;
 
 	foreach ($mydrafts as $draft){
 		$sku = $wpdb->get_results(
@@ -115,6 +120,8 @@ GROUP BY p.ID
 
 		$description = substr($draft->Description, 0, 100);
 		$description .= '...';
+		$defaultPrice = $draft->Price;
+
 
 
 		echo '<tr id="post-'.$sku->meta_value.'" class="iedit author-self level-0 post-136 type-product status-publish has-post-thumbnail hentry product_cat-allgemein">';
@@ -154,8 +161,16 @@ GROUP BY p.ID
 		
 		$jsonArr = [];
 
+
 		foreach($_POST as $key => $value){
-			$jsonArr[$key] = $value;
+			if(empty($value)){
+				// ASSIGN DEFAULT PRICE INTO IT
+				$jsonArr[$key] = $defaultPrice;
+			}
+			else{
+				$jsonArr[$key] = $value;
+			}
+
 		}
 
 		echo json_encode($jsonArr);
