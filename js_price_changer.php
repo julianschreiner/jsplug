@@ -1,32 +1,22 @@
 <?php
-
 /*
 Plugin Name: Custom Price Changer for WooCommerce 
 Plugin UI:
-Description: Simple plugin
+Description: Make custom WooCommerce product prices for each user group!
 Author: Julian Schreiner
 Author URI:
 Version: 0.1
 */
 
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-error_reporting(E_ALL);
-
 add_action("admin_menu", "addMenu");
-add_shortcode('shtest', 'test');
 
 wp_enqueue_script('jquery');
 wp_register_script('script', plugin_dir_url(__FILE__) . '/js/script.js', array('jquery'));
 wp_enqueue_script( 'script' );
-
-
-function test(){
-	return "WITH SHORTCODE CREATED";
-}
 
 
 function addMenu(){
@@ -43,7 +33,7 @@ TPL;
 	echo $t;
 
 
-		handlePost();
+	handlePost();
 			
 }
 
@@ -53,7 +43,7 @@ TPL;
 
 function handlePost(){
 	global $wpdb, $wp_roles;
-
+	
 	foreach($wp_roles->roles as $role){
 		echo '<input type="hidden" name="'. $role['name'] .'" class="roles"></input>'; 
 		//var_dump($role['name']);
@@ -218,7 +208,6 @@ GROUP BY p.ID
 		// TODO AUTO REFRESH VALUES
 	}
 }
-
 // HERE below in the array set your specific product IDs
 function specific_product_ids(){
 		global $wpdb;
@@ -294,12 +283,5 @@ function custom_price( $price, $product ) {
 		return $price;
 	}
 }
-
-
-
-
-
-?> 
-
 
 
