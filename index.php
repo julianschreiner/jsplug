@@ -75,9 +75,9 @@ GROUP BY p.ID
 
 	echo "<br><br><br>";
 	echo '<table class="wp-list-table widefat fixed striped posts">';
-		echo '<thead>';
-		echo '<tr>';
-		echo '<th scope="col" id="name" class="manage-column column-name column-primary sortable desc">
+	echo '<thead>';
+	echo '<tr>';
+	echo '<th scope="col" id="name" class="manage-column column-name column-primary sortable desc">
 				<span>Name</span>
 			  </th>
 			<th scope="col" id="sku" class="manage-column column-sku sortable desc">
@@ -93,8 +93,8 @@ GROUP BY p.ID
 			<span></span>
 			</th>
 			</tr>';
-		echo '</thead>';
-		echo '<tbody id="the-list">';
+	echo '</thead>';
+	echo '<tbody id="the-list">';
 
 
 	$defaultPrice = [];
@@ -251,16 +251,42 @@ function get_price_multiplier() {
 }
 
 function custom_price( $price, $product ) {	
+	global $wpdb;
+
 	if( in_array($product->get_sku(), specific_product_ids() ) ) {
 
 		// TODO CHECK USER GROUP AND GIVE SETTED PRICE FOR THIS PRODUCT!!
 		$current_user_roles = wp_get_current_user()->roles[0];
 		// User can have more than one role
 		$current_user_roles = ucwords($current_user_roles);
-		var_dump($current_user_roles);
+
+		$where = 'price_change_product_' . $product->get_sku();
 
 
-    	return $price * get_price_multiplier();
+		$alreadyInDB = $wpdb->get_results(
+			"SELECT * FROM wp_posts WHERE post_title = '".$where."'"
+		);
+
+		$customPrice = 0;
+
+		if(!empty($alreadyInDB[0])){
+			$key = $current_user_roles . "Price";
+			
+			// PARSE
+			$jsonOBJ = json_decode($alreadyInDB[0]->post_content);
+
+			$customPrice = $jsonOBJ->$key;
+
+		}
+		else{
+			// KEINE CUSTOM CONFIG ANGELEGT
+			// SHOW NORMAL PRICE
+			$customPrice = $price;
+		}
+		
+	
+
+    	return $customPrice;
 	} else{
 		
 		return $price;
