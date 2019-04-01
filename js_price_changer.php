@@ -8,18 +8,20 @@ Author: Julian Schreiner
 Author URI:
 Version: 0.1
 */
+
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
 error_reporting(E_ALL);
+
 add_action("admin_menu", "addMenu");
 add_shortcode('shtest', 'test');
 
 wp_enqueue_script('jquery');
 wp_register_script('script', plugin_dir_url(__FILE__) . '/js/script.js', array('jquery'));
 wp_enqueue_script( 'script' );
-
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
 
 
 function test(){
