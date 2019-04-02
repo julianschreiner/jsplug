@@ -245,43 +245,45 @@ function custom_price( $price, $product ) {
 	global $wpdb;
 
 	if( in_array($product->get_sku(), specific_product_ids() ) ) {
-
 		// TODO CHECK USER GROUP AND GIVE SETTED PRICE FOR THIS PRODUCT!!
 		$current_user_roles = wp_get_current_user()->roles[0];
-		// User can have more than one role
-		$current_user_roles = ucwords($current_user_roles);
-
-		$where = 'price_change_product_' . $product->get_sku();
-
-
-		$alreadyInDB = $wpdb->get_results(
-			"SELECT * FROM wp_posts WHERE post_title = '".$where."'"
-		);
-
-		$customPrice = 0;
-
-		if(!empty($alreadyInDB[0])){
-			$key = $current_user_roles . "Price";
-			
-			// PARSE
-			$jsonOBJ = json_decode($alreadyInDB[0]->post_content);
-
-			$customPrice = $jsonOBJ->$key;
-
-		}
-		else{
-			// KEINE CUSTOM CONFIG ANGELEGT
-			// SHOW NORMAL PRICE
+		
+		// NOT LOGGED IN 
+		if(is_null($current_user_roles) || empty($current_user_roles)){
 			$customPrice = $price;
 		}
-		
-	
+		else{
+			// LOGGED IN 
+			// User can have more than one role
+			$current_user_roles = ucwords($current_user_roles);
 
-    	return $customPrice;
-	} else{
-		
-		return $price;
+			$where = 'price_change_product_' . $product->get_sku();
+
+
+			$alreadyInDB = $wpdb->get_results(
+				"SELECT * FROM wp_posts WHERE post_title = '" . $where . "'"
+			);
+
+			$customPrice = 0;
+
+			if (!empty($alreadyInDB[0])) {
+				$key = $current_user_roles . "Price";
+
+				// PARSE
+				$jsonOBJ = json_decode($alreadyInDB[0]->post_content);
+
+				$customPrice = $jsonOBJ->$key;
+			}
+		}
 	}
-}
+	else{
+		// KEINE CUSTOM CONFIG ANGELEGT
+		// SHOW NORMAL PRICE
+		$customPrice = $price;
+	}
+		
+    	return $customPrice;
+	}
+
 
 
