@@ -3,6 +3,10 @@ jQuery( document ).ready(function($) {
     console.log( "ready!" );
 
     $('.button-primary').click(function() {
+        
+        
+
+
     	console.log("clicked");
         console.log(this.name);
         
@@ -61,4 +65,6 @@ jQuery( document ).ready(function($) {
                 
             )
     });
+
+
 });
