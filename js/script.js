@@ -3,11 +3,7 @@ jQuery( document ).ready(function($) {
     console.log( "ready!" );
 
     $('.button-primary').click(function() {
-        
-        
-
-
-    	console.log("clicked");
+        console.log("clicked");
         console.log(this.name);
         
         let roles = [];
